@@ -19,6 +19,11 @@ label.bad-label {
 input.bad-input {
     border-color: red;
 }
+span.thanks {
+    font-size: 120%;
+    font-weight: bold;
+    color: blue;
+}
 </style>
 
 <script>
@@ -32,12 +37,14 @@ input.bad-input {
           ASCII_UPPERCASE = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
           DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
           PUNCTUATION = ["!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"];
+
     const CHARTYPE_ASCII_LOWERCASE = 0,
           CHARTYPE_ASCII_UPPERCASE = 1,
           CHARTYPE_DIGITS = 2,
           CHARTYPE_PUNCTUATION = 3,
           CHARTYPE_OTHER = 4;
 
+    const DEFAULT_ERROR_MESSAGE = 'Something unexpected happened while processing your request. Please contact support@example.com for assistance.';
 
     class ErrorHandler {
         constructor() {
@@ -100,8 +107,8 @@ input.bad-input {
     const validators = [
         {
             "name": 'username',
-            "errorMessage": 'Your username must be atleast one character long.',
-            "validate": async username => username.length >= 1
+            "errorMessage": 'Your username must be atleast three characters long.',
+            "validate": async username => username.length >= 3
         },
         {
             "name": 'emailAddress',
@@ -137,6 +144,8 @@ input.bad-input {
         }
     ].map( kwargs => new Validator(kwargs) );
 
+    let formSubmitted = false;
+
     const handleSubmit = async e => {
         const errorHandler = new ErrorHandler();
         const valid = (await Promise.all(
@@ -146,7 +155,28 @@ input.bad-input {
         )).reduce( (p, c) => p && c );
 
         if(valid === true) {
-            // doo stuff
+            const formData = new FormData();
+            for (const index in elementValues) {
+                formData.append(index, elementValues[index]);
+            }
+
+            const res = await fetch('./api/process-form.php', {
+                method: 'POST',
+                body: formData
+            }).then( res => res.json() );
+
+            if(typeof res === 'object') {
+                errorHandler.addError(res['display_error'] ?? DEFAULT_ERROR_MESSAGE);
+            } else {
+                switch (res) {
+                    case 'good request':
+                        formSubmitted = true;
+                        break;
+                    case 'bad request':
+                    default:
+                        errorHandler.addError(DEFAULT_ERROR_MESSAGE);
+                }
+            }
         }
 
         registrationErrorHandler = errorHandler;
@@ -179,33 +209,41 @@ input.bad-input {
         {/if}
     </div>
 </div>
-<form on:submit|preventDefault={handleSubmit}>
-    <div class="row">
-        <div class="six columns">
-            <label for="username" class:bad-label="{registrationErrorHandler.isMarked('username')}">Username:</label><br>
-            <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('username')}" bind:value="{elementValues.username}" type="text" id="username" name="username"><br>
+{#if !formSubmitted}
+    <form on:submit|preventDefault={handleSubmit}>
+        <div class="row">
+            <div class="six columns">
+                <label for="username" class:bad-label="{registrationErrorHandler.isMarked('username')}">Username:</label><br>
+                <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('username')}" bind:value="{elementValues.username}" type="text" id="username" name="username"><br>
+            </div>
+            <div class="six columns">
+                <label for="emailAddress" class:bad-label="{registrationErrorHandler.isMarked('emailAddress')}">Email address:</label><br>
+                <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('emailAddress')}" bind:value="{elementValues.emailAddress}" type="text" id="emailAddress" name="emailAddress"><br>
+            </div>
         </div>
-        <div class="six columns">
-            <label for="emailAddress" class:bad-label="{registrationErrorHandler.isMarked('emailAddress')}">Email address:</label><br>
-            <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('emailAddress')}" bind:value="{elementValues.emailAddress}" type="text" id="emailAddress" name="emailAddress"><br>
+        <div class="row">
+            <div class="six columns">
+                <label for="password" class:bad-label="{registrationErrorHandler.isMarked('password')}">Password:</label><br>
+                <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('password')}" bind:value="{elementValues.password}" type="password" id="password" name="password"><br>
+            </div>
+            <div class="six columns">
+                <label for="confirmPassword" class:bad-label="{registrationErrorHandler.isMarked('confirmPassword')}">Confirm password:</label><br>
+                <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('confirmPassword')}" bind:value="{elementValues.confirmPassword}" type="password" id="confirmPassword" name="confirmPassword"><br>
+            </div>
+        </div>
+        <div class="row">
+            <div class="six columns">
+                &nbsp;
+            </div>
+            <div class="six columns">
+                <button class="button-primary" type="submit" value="register">Register</button> <br>
+            </div>
+        </div>
+    </form>
+{:else}
+    <div class="row">
+        <div class="twelve columns">
+            <span class="thanks">Thank you for registering!</span>
         </div>
     </div>
-    <div class="row">
-        <div class="six columns">
-            <label for="password" class:bad-label="{registrationErrorHandler.isMarked('password')}">Password:</label><br>
-            <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('password')}" bind:value="{elementValues.password}" type="password" id="password" name="password"><br>
-        </div>
-        <div class="six columns">
-            <label for="confirmPassword" class:bad-label="{registrationErrorHandler.isMarked('confirmPassword')}">Confirm password:</label><br>
-            <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('confirmPassword')}" bind:value="{elementValues.confirmPassword}" type="password" id="confirmPassword" name="confirmPassword"><br>
-        </div>
-    </div>
-    <div class="row">
-        <div class="six columns">
-            &nbsp;
-        </div>
-        <div class="six columns">
-            <button class="button-primary" type="submit" value="register">Register</button> <br>
-        </div>
-    </div>
-</form>
+{/if}

@@ -1,0 +1,15 @@
+{
+    auto_https off
+}
+
+:80 {
+    log {
+        output stderr
+    }
+    handle_path /api/* {
+        reverse_proxy host.docker.internal:8080
+    }
+    route /* {
+        reverse_proxy host.docker.internal:3000
+    }
+}
