@@ -13,6 +13,12 @@ span.error-header {
     font-size: 120%;
     font-weight: bold;
 }
+label.bad-label {
+    color: red;
+}
+input.bad-input {
+    border-color: red;
+}
 </style>
 
 <script>
@@ -36,6 +42,7 @@ span.error-header {
     class ErrorHandler {
         constructor() {
             this.errors = [];
+            this.markedErrors = {};
         }
 
         get hasError() {
@@ -44,6 +51,14 @@ span.error-header {
 
         async addError(errorMessage) {
             this.errors.push(errorMessage);
+        }
+
+        isMarked(elementName) {
+            return this.markedErrors[elementName] ?? false;
+        }
+
+        async markError(elementName) {
+            this.markedErrors[elementName] = true;
         }
     }
 
@@ -60,6 +75,7 @@ span.error-header {
             const validationResult = await this.validateFunction(elementValues[this.elementName] ?? '');
 
             if(validationResult === false) {
+                await errorHandler.markError(this.elementName);
                 errorHandler.addError(this.errorMessage);
             }
 
@@ -123,14 +139,16 @@ span.error-header {
 
     const handleSubmit = async e => {
         const errorHandler = new ErrorHandler();
-        console.log('hi', e, validators, errorHandler);
         const valid = (await Promise.all(
             validators.map(
                 validator => validator.validate(errorHandler)
             )
         )).reduce( (p, c) => p && c );
-        console.log('valid', valid);
-        console.log(elementValues);
+
+        if(valid === true) {
+            // doo stuff
+        }
+
         registrationErrorHandler = errorHandler;
     };
 </script>
@@ -164,22 +182,22 @@ span.error-header {
 <form on:submit|preventDefault={handleSubmit}>
     <div class="row">
         <div class="six columns">
-            <label for="username">Username:</label><br>
-            <input class="u-full-width" bind:value="{elementValues.username}" type="text" id="username" name="username"><br>
+            <label for="username" class:bad-label="{registrationErrorHandler.isMarked('username')}">Username:</label><br>
+            <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('username')}" bind:value="{elementValues.username}" type="text" id="username" name="username"><br>
         </div>
         <div class="six columns">
-            <label for="emailAddress">Email address:</label><br>
-            <input class="u-full-width" bind:value="{elementValues.emailAddress}" type="text" id="emailAddress" name="emailAddress"><br>
+            <label for="emailAddress" class:bad-label="{registrationErrorHandler.isMarked('emailAddress')}">Email address:</label><br>
+            <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('emailAddress')}" bind:value="{elementValues.emailAddress}" type="text" id="emailAddress" name="emailAddress"><br>
         </div>
     </div>
     <div class="row">
         <div class="six columns">
-            <label for="password">Password:</label><br>
-            <input class="u-full-width" bind:value="{elementValues.password}" type="password" id="password" name="password"><br>
+            <label for="password" class:bad-label="{registrationErrorHandler.isMarked('password')}">Password:</label><br>
+            <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('password')}" bind:value="{elementValues.password}" type="password" id="password" name="password"><br>
         </div>
         <div class="six columns">
-            <label for="confirmPassword">Confirm password:</label><br>
-            <input class="u-full-width" bind:value="{elementValues.confirmPassword}" type="password" id="confirmPassword" name="confirmPassword"><br>
+            <label for="confirmPassword" class:bad-label="{registrationErrorHandler.isMarked('confirmPassword')}">Confirm password:</label><br>
+            <input class="u-full-width" class:bad-input="{registrationErrorHandler.isMarked('confirmPassword')}" bind:value="{elementValues.confirmPassword}" type="password" id="confirmPassword" name="confirmPassword"><br>
         </div>
     </div>
     <div class="row">
