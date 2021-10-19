@@ -24,7 +24,7 @@ clean-build:
 .PHONY: deploy
 deploy:
 	mkdir -p ~/public_html/cnmt-310-adding-css-and-javascript
-	cp ./dist/* ~/public_html/cnmt-310-adding-css-and-javascript
+	rsync -avP ./dist/* ~/public_html/cnmt-310-adding-css-and-javascript
 
 
 .PHONY: clean-deploy
