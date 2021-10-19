@@ -6,6 +6,19 @@ help:
 
 .PHONY: build
 build:
+	mkdir -p ./dist/api
+	cp ./backend/process-form.php ./dist/api
+	cd ./frontend && docker build . -f Dockerfile.builder -t static-assets
+	rm -rf /tmp/nodebuild
+	mkdir -p /tmp/nodebuild
+	docker run -t -v /tmp/nodebuild:/tmp/nodebuild static-assets /bin/bash -c 'mv /usr/src/frontend-app/build /tmp/nodebuild'
+	mv /tmp/nodebuild/build/* ./dist
+
+
+.PHONY: clean-build
+clean-build:
+	rm -rf ./dist
+	make build
 
 
 .PHONY: deploy

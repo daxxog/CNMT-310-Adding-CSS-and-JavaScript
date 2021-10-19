@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Assignment for CNMT 310">
+        <meta name="author" content="David Volm">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="./site.webmanifest">
+        <link rel="stylesheet" href="./Skeleton-2.0.4/css/normalize.css">
+        <link rel="stylesheet" href="./Skeleton-2.0.4/css/skeleton.css">
+        <title>Week 7: JavaScript Validation and CSS</title>
+
+		
+
+		<link rel="modulepreload" href="/_app/start-816a14d7.js">
+		<link rel="modulepreload" href="/_app/chunks/vendor-4c57f1eb.js">
+		<link rel="modulepreload" href="/_app/layout.svelte-6d88a0b5.js">
+		<link rel="modulepreload" href="/_app/pages/index.svelte-42921689.js">
+		<link rel="stylesheet" href="/_app/assets/start-61d1577b.css">
+		<link rel="stylesheet" href="/_app/assets/pages/index.svelte-ab9cb696.css">
+
+		<script type="module">
+			import { start } from "/_app/start-816a14d7.js";
+			start({
+				target: document.querySelector(".container"),
+				paths: {"base":"","assets":""},
+				session: {},
+				host: location.host,
+				route: true,
+				spa: false,
+				trailing_slash: "never",
+				hydrate: {
+					status: 200,
+					error: null,
+					nodes: [
+						import("/_app/layout.svelte-6d88a0b5.js"),
+						import("/_app/pages/index.svelte-42921689.js")
+					],
+					page: {
+						host: location.host, // TODO this is redundant
+						path: "\u002F",
+						query: new URLSearchParams(""),
+						params: {}
+					}
+				}
+			});
+		</script>
+    </head>
+    <body>
+        <div class="container">
+
+
+
+
+
+
+
+
+
+<div class="row svelte-1qgl1jd"><div class="twelve columns"><br></div></div>
+<div class="row svelte-1qgl1jd"><div class="twelve columns"><h1>User Registration</h1></div></div>
+<div class="row svelte-1qgl1jd"><div class="twelve columns"></div></div>
+<form><div class="row svelte-1qgl1jd"><div class="six columns"><label for="username" class="svelte-1qgl1jd">Username:</label><br>
+                <input class="u-full-width svelte-1qgl1jd" type="text" id="username" name="username"><br></div>
+            <div class="six columns"><label for="emailAddress" class="svelte-1qgl1jd">Email address:</label><br>
+                <input class="u-full-width svelte-1qgl1jd" type="text" id="emailAddress" name="emailAddress"><br></div></div>
+        <div class="row svelte-1qgl1jd"><div class="six columns"><label for="password" class="svelte-1qgl1jd">Password:</label><br>
+                <input class="u-full-width svelte-1qgl1jd" type="password" id="password" name="password"><br></div>
+            <div class="six columns"><label for="confirmPassword" class="svelte-1qgl1jd">Confirm password:</label><br>
+                <input class="u-full-width svelte-1qgl1jd" type="password" id="confirmPassword" name="confirmPassword"><br></div></div>
+        <div class="row svelte-1qgl1jd"><div class="six columns"> 
+            </div>
+            <div class="six columns"><button class="button-primary" type="submit" value="register">Register</button> <br></div></div></form>
+
+
+
+			
+		</div>
+    </body>
+</html>
